@@ -80,16 +80,20 @@ export class App extends Component {
     }));
   };
   render() {
-    const { searchingImg, page, status } = this.state;
+    const { status, hits, totalPages, tags, showModal, largeImg } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.formData} />
         {status === 'idle' && <Notification />}
-        <ImageGallery
-          searchQwery={searchingImg}
-          hageNumber={page}
-          onSwowMore={this.handleLoadMoreBtn}
-        />
+        {hits.length > 0 && (
+          <ImageGallery>
+            <ImageGalleryItem
+              imagesData={hits}
+              onShowModal={this.handleGalleryItemClick}
+            />
+          </ImageGallery>
+        )}
+
         {status === 'pending' && <Loader />}
         {status === 'resolved' && totalPages !== this.props.hageNumber && (
           <Button onLoadMoreClick={this.props.onSwowMore} />

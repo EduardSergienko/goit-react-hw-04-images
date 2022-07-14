@@ -4,14 +4,7 @@ import styles from './ImageGallery.module.scss';
 export function ImageGallery({ children }) {
   return (
     <>
-      {hits.length > 0 && (
-        <ul className={styles.ImageGallery}>
-          <ImageGalleryItem
-            imagesData={hits}
-            onShowModal={this.handleGalleryItemClick}
-          />
-        </ul>
-      )}
+      <ul className={styles.ImageGallery}>{children}</ul>}
     </>
   );
 }
