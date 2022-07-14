@@ -39,31 +39,26 @@ export class App extends Component {
           status: 'resolved',
         }));
 
-        if (prevState.searchingImg !== this.state.searchingImg) {
+        if (!resolve.data.hits.length) {
           this.setState({
-            hits: [...resolve.data.hits],
-            totalHits: resolve.data.totalHits,
+            status: 'idle',
           });
-          if (!resolve.data.hits.length) {
-            this.setState({
-              status: 'idle',
-            });
-            Notiflix.Notify.failure(
-              `Sory, ${this.props.searchQwery} not found, please try again`
-            );
-          }
+          Notiflix.Notify.failure(
+            `Sory, ${this.props.searchQwery} not found, please try again`
+          );
         }
       } catch (error) {
         console.log(error);
       }
   };
   formData = data => {
+    if (this.state.searchingImg === data) {
+      return;
+    }
     this.setState({
       searchingImg: data,
       page: 1,
       hits: [],
-      totalPages: 1,
-      totalHits: null,
     });
   };
 
@@ -80,7 +75,8 @@ export class App extends Component {
     }));
   };
   render() {
-    const { status, hits, totalPages, tags, showModal, largeImg } = this.state;
+    const { status, hits, totalPages, tags, showModal, largeImg, page } =
+      this.state;
     return (
       <>
         <Searchbar onSubmit={this.formData} />
@@ -95,8 +91,8 @@ export class App extends Component {
         )}
 
         {status === 'pending' && <Loader />}
-        {status === 'resolved' && totalPages !== this.props.hageNumber && (
-          <Button onLoadMoreClick={this.props.onSwowMore} />
+        {status === 'resolved' && totalPages !== page && (
+          <Button onLoadMoreClick={this.handleLoadMoreBtn} />
         )}
         {showModal && (
           <Modal

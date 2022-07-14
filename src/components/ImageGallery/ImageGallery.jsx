@@ -4,11 +4,11 @@ import styles from './ImageGallery.module.scss';
 export function ImageGallery({ children }) {
   return (
     <>
-      <ul className={styles.ImageGallery}>{children}</ul>}
+      <ul className={styles.ImageGallery}>{children}</ul>
     </>
   );
 }
 
 ImageGallery.propTypes = {
-  searchQwery: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 };
