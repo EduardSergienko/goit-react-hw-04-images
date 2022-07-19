@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItems/ImageGalleryItems';
+
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
 import { Notification } from './Notification/Notification';
@@ -82,12 +82,10 @@ export class App extends Component {
         <Searchbar onSubmit={this.formData} />
         {status === 'idle' && <Notification />}
         {hits.length > 0 && (
-          <ImageGallery>
-            <ImageGalleryItem
-              imagesData={hits}
-              onShowModal={this.handleGalleryItemClick}
-            />
-          </ImageGallery>
+          <ImageGallery
+            imagesData={hits}
+            onShowModal={this.handleGalleryItemClick}
+          />
         )}
 
         {status === 'pending' && <Loader />}
