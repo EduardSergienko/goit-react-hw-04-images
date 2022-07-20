@@ -16,7 +16,7 @@ export function ImageGalleryItem({ largeImage, src, alt, onShowModal }) {
 
 ImageGalleryItem.propTypes = {
   src: PropTypes.string.isRequired,
-  largeImageURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string,
   alt: PropTypes.string.isRequired,
   onShowModal: PropTypes.func.isRequired,
 };
