@@ -6,7 +6,7 @@ import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
 import { Notification } from './Notification/Notification';
 import { fechImg } from 'services/ImageApiService';
-import Modal from './Modal/Modal';
+import { Modal } from './Modal/Modal';
 import Notiflix from 'notiflix';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 export function App() {
@@ -20,17 +20,6 @@ export function App() {
   const [status, setStatus] = useState('idle');
   const [tags, setTags] = useState('');
 
-  // state = {
-  //   page: 1,
-  //   searchingImg: '',
-  //   hits: [],
-  //   totalPages: 1,
-  //   totalHits: null,
-  //   largeImg: '',
-  //   showModal: false,
-  //   status: 'idle',
-  //   tags: '',
-  // };
   useEffect(() => {
     if (!searchingImg) {
       return;
@@ -91,32 +80,17 @@ export function App() {
     setSearchingImg(data);
     setPage(1);
     setHits([]);
-    // this.setState({
-    //   searchingImg: data,
-    //   page: 1,
-    //   hits: [],
-    // });
   };
 
   const handleGalleryItemClick = (largImg, imgAlt) => {
     setShowModal(!showModal);
     setLargeImg(largImg);
     setTags(imgAlt);
-    // this.setState(({ showModal }) => ({
-    //   showModal: !showModal,
-    //   largeImg: largImg,
-    //   tags: imgAlt,
-    // }));
   };
   const handleLoadMoreBtn = () => {
     setPage(page + 1);
-    // this.setState(prevState => ({
-    //   page: prevState.page + 1,
-    // }));
   };
 
-  // const { status, hits, totalPages, tags, showModal, largeImg, page } =
-  //   this.state;
   return (
     <>
       <Searchbar onSubmit={formData} />
