@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 
@@ -9,97 +9,133 @@ import { fechImg } from 'services/ImageApiService';
 import Modal from './Modal/Modal';
 import Notiflix from 'notiflix';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-export class App extends Component {
-  state = {
-    page: 1,
-    searchingImg: '',
-    hits: [],
-    totalPages: 1,
-    totalHits: null,
-    largeImg: '',
-    showModal: false,
-    status: 'idle',
-    tags: '',
-  };
-  componentDidUpdate = async (prevProps, prevState) => {
-    if (
-      prevState.searchingImg !== this.state.searchingImg ||
-      prevState.page !== this.state.page
-    )
-      try {
-        this.setState({
-          status: 'pending',
-        });
-        const resolve = await fechImg(this.state.searchingImg, this.state.page);
-        console.log(resolve);
-        this.setState(prevState => ({
-          hits: [...prevState.hits, ...resolve.data.hits],
-          totalHits: resolve.data.totalHits,
-          totalPages: Math.ceil(resolve.data.totalHits / 12),
-          status: 'resolved',
-        }));
+export function App() {
+  const [page, setPage] = useState(1);
+  const [searchingImg, setSearchingImg] = useState('');
+  const [hits, setHits] = useState([]);
+  const [totalHits, setTotalHits] = useState(null);
+  const [totalPages, setTotalPages] = useState(null);
+  const [largeImg, setLargeImg] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [tags, setTags] = useState('');
 
-        if (!resolve.data.hits.length) {
-          this.setState({
-            status: 'idle',
-          });
-          Notiflix.Notify.failure(
-            `Sory, ${this.props.searchQwery} not found, please try again`
-          );
-        }
-      } catch (error) {
-        console.log(error);
-      }
-  };
-  formData = data => {
-    if (this.state.searchingImg === data) {
+  // state = {
+  //   page: 1,
+  //   searchingImg: '',
+  //   hits: [],
+  //   totalPages: 1,
+  //   totalHits: null,
+  //   largeImg: '',
+  //   showModal: false,
+  //   status: 'idle',
+  //   tags: '',
+  // };
+  useEffect(() => {
+    if (!searchingImg) {
       return;
     }
-    this.setState({
-      searchingImg: data,
-      page: 1,
-      hits: [],
-    });
+    setStatus('pending');
+    fechImg(searchingImg, page)
+      .then(resolve => {
+        setHits([...hits, ...resolve.data.hits]);
+        setTotalHits(resolve.data.totalHits);
+        setTotalPages(Math.ceil(totalHits / 12));
+        setStatus('resolved');
+        if (!resolve.data.hits.length) {
+          setStatus('idle');
+          Notiflix.Notify.failure(
+            `Sory, ${searchingImg} not found, please try again`
+          );
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchingImg, page]);
+  // componentDidUpdate = async (prevProps, prevState) => {
+  //   if (
+  //     prevState.searchingImg !== this.state.searchingImg ||
+  //     prevState.page !== this.state.page
+  //   )
+  //     try {
+  //       this.setState({
+  //         status: 'pending',
+  //       });
+  //       const resolve = await fechImg(this.state.searchingImg, this.state.page);
+  //       console.log(resolve);
+  //       this.setState(prevState => ({
+  //         hits: [...prevState.hits, ...resolve.data.hits],
+  //         totalHits: resolve.data.totalHits,
+  //         totalPages: Math.ceil(resolve.data.totalHits / 12),
+  //         status: 'resolved',
+  //       }));
+
+  //       if (!resolve.data.hits.length) {
+  //         this.setState({
+  //           status: 'idle',
+  //         });
+  //         Notiflix.Notify.failure(
+  //           `Sory, ${this.props.searchQwery} not found, please try again`
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  // };
+  const formData = data => {
+    if (searchingImg === data) {
+      return;
+    }
+    setSearchingImg(data);
+    setPage(1);
+    setHits([]);
+    // this.setState({
+    //   searchingImg: data,
+    //   page: 1,
+    //   hits: [],
+    // });
   };
 
-  handleGalleryItemClick = (largImg, imgAlt) => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-      largeImg: largImg,
-      tags: imgAlt,
-    }));
+  const handleGalleryItemClick = (largImg, imgAlt) => {
+    setShowModal(!showModal);
+    setLargeImg(largImg);
+    setTags(imgAlt);
+    // this.setState(({ showModal }) => ({
+    //   showModal: !showModal,
+    //   largeImg: largImg,
+    //   tags: imgAlt,
+    // }));
   };
-  handleLoadMoreBtn = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  const handleLoadMoreBtn = () => {
+    setPage(page + 1);
+    // this.setState(prevState => ({
+    //   page: prevState.page + 1,
+    // }));
   };
-  render() {
-    const { status, hits, totalPages, tags, showModal, largeImg, page } =
-      this.state;
-    return (
-      <>
-        <Searchbar onSubmit={this.formData} />
-        {status === 'idle' && <Notification />}
-        {hits.length > 0 && (
-          <ImageGallery
-            imagesData={hits}
-            onShowModal={this.handleGalleryItemClick}
-          />
-        )}
 
-        {status === 'pending' && <Loader />}
-        {status === 'resolved' && totalPages !== page && (
-          <Button onLoadMoreClick={this.handleLoadMoreBtn} />
-        )}
-        {showModal && (
-          <Modal
-            imageAlt={tags}
-            largeImg={largeImg}
-            onShowModal={this.handleGalleryItemClick}
-          />
-        )}
-      </>
-    );
-  }
+  // const { status, hits, totalPages, tags, showModal, largeImg, page } =
+  //   this.state;
+  return (
+    <>
+      <Searchbar onSubmit={formData} />
+      {status === 'idle' && <Notification />}
+      {hits.length > 0 && (
+        <ImageGallery imagesData={hits} onShowModal={handleGalleryItemClick} />
+      )}
+
+      {status === 'pending' && <Loader />}
+      {status === 'resolved' && totalPages !== page && (
+        <Button onLoadMoreClick={handleLoadMoreBtn} />
+      )}
+      {showModal && (
+        <Modal
+          imageAlt={tags}
+          largeImg={largeImg}
+          onShowModal={handleGalleryItemClick}
+        />
+      )}
+    </>
+  );
 }
