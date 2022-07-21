@@ -6,19 +6,17 @@ const modalRoot = document.querySelector('#modal-root');
 
 export function Modal({ imageAlt, largeImg, onShowModal }) {
   useEffect(() => {
+    const handleEscClick = e => {
+      if (e.code === 'Escape') {
+        onShowModal();
+      }
+    };
     window.addEventListener('keydown', handleEscClick);
 
     return () => {
       window.removeEventListener('keydown', handleEscClick);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleEscClick = e => {
-    if (e.code === 'Escape') {
-      onShowModal();
-    }
-  };
+  }, [onShowModal]);
 
   const handleOverlayClick = e => {
     if (e.currentTarget === e.target) {

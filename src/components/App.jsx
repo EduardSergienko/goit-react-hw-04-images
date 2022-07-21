@@ -28,7 +28,7 @@ export function App() {
       try {
         setStatus('pending');
         const resolve = await fechImg(searchingImg, page);
-        setHits([...hits, ...resolve.data.hits]);
+        setHits(prevHits => [...prevHits, ...resolve.data.hits]);
         setTotalHits(resolve.data.totalHits);
         setTotalPages(Math.ceil(totalHits / 12));
         setStatus('resolved');
@@ -45,7 +45,6 @@ export function App() {
     }
 
     fethImages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchingImg, page]);
 
   const formData = data => {
