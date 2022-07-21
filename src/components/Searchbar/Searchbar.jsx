@@ -26,7 +26,6 @@ export function Searchbar({ onSubmit }) {
         <button type="submit" className={styles.SearchForm_button}>
           <span className={styles.SearchForm_button_label}>Search</span>
         </button>
-
         <input
           className={styles.SearchForm_input}
           type="text"
