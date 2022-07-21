@@ -13,7 +13,7 @@ export function App() {
   const [page, setPage] = useState(1);
   const [searchingImg, setSearchingImg] = useState('');
   const [hits, setHits] = useState([]);
-  const [totalHits, setTotalHits] = useState(null);
+  // const [totalHits, setTotalHits] = useState(null);
   const [totalPages, setTotalPages] = useState(null);
   const [largeImg, setLargeImg] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -29,8 +29,8 @@ export function App() {
         setStatus('pending');
         const resolve = await fechImg(searchingImg, page);
         setHits(prevHits => [...prevHits, ...resolve.data.hits]);
-        setTotalHits(resolve.data.totalHits);
-        setTotalPages(Math.ceil(totalHits / 12));
+        // setTotalHits(resolve.data.totalHits);
+        setTotalPages(Math.ceil(resolve.data.totalHits / 12));
         setStatus('resolved');
 
         if (!resolve.data.hits.length) {
@@ -45,7 +45,6 @@ export function App() {
     }
 
     fethImages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchingImg, page]);
 
   const formData = data => {
