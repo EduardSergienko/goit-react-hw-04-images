@@ -45,6 +45,7 @@ export function App() {
     }
 
     fethImages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchingImg, page]);
 
   const formData = data => {
